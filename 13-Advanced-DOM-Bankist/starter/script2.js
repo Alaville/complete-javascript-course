@@ -1,79 +1,83 @@
 'use strict';
 
-const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
+const btnsShowModal = document.querySelectorAll('.btn--show-modal');
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 
-const openModal = () => {
+const openModal = function () {
   modal.classList.remove('hidden');
   overlay.classList.remove('hidden');
 };
 
-const closeModal = () => {
+const closeModal = function () {
   modal.classList.add('hidden');
   overlay.classList.add('hidden');
 };
 
-btnsOpenModal.forEach(btn => {
+btnsShowModal.forEach(btn => {
   btn.addEventListener('click', openModal);
 });
 
 overlay.addEventListener('click', closeModal);
+
 btnCloseModal.addEventListener('click', closeModal);
 
 document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-    closeModal();
-  }
+  e.preventDefault();
+
+  if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
 });
 
-//Smooth scroll to features
+//learn more button smooth scroll
 
 const section1 = document.getElementById('section--1');
 const btnScrollTo = document.querySelector('.btn--scroll-to');
 
 btnScrollTo.addEventListener('click', function (e) {
   e.preventDefault();
+
   section1.scrollIntoView({ behavior: 'smooth' });
 });
 
-//smooth scrolling
+//////////////////////////////////////page navigation smooth
 
-const navLinksEl = document.querySelectorAll('.nav__links');
+const nav = document.querySelector('.nav');
+const navLinks = document.querySelectorAll('.nav__links');
 
-navLinksEl.forEach(link => {
-  link.addEventListener('click', function (e) {
-    e.preventDefault();
-    if (
-      e.target.classList.contains('nav__link') &&
-      !e.target.classList.contains('nav__link--btn')
-    ) {
-      const href = e.target.getAttribute('href').slice(1);
+nav.addEventListener('click', function (e) {
+  e.preventDefault();
 
-      document.getElementById(`${href}`).scrollIntoView({ behavior: 'smooth' });
-    }
-  });
+  if (
+    e.target.classList.contains('nav__link') &&
+    !e.target.classList.contains('btn--show-modal')
+  ) {
+    const href = e.target.getAttribute('href').slice(1);
+    document.getElementById(`${href}`).scrollIntoView({ behavior: 'smooth' });
+  }
 });
 
-//operation tab container
+//////////// operations
 
-const tabsContainer = document.querySelector('.operations__tab-container');
-const opContent = document.querySelectorAll('.operations__content');
-const tabs = document.querySelectorAll('.operations__tab');
+const container = document.querySelector('.operations__tab-container');
+const contents = document.querySelectorAll('.operations__content');
+const btns = document.querySelectorAll('.operations__tab');
 
-tabsContainer.addEventListener('click', function (e) {
+container.addEventListener('click', function (e) {
   e.preventDefault();
+
   const click = e.target.closest('button');
 
   if (click) {
-    tabs.forEach(tab => tab.classList.remove('operations__tab--active'));
+    console.log(click);
 
-    opContent.forEach(content =>
-      content.classList.remove('operations__content--active')
-    );
+    btns.forEach(btn => btn.classList.remove('operations__tab--active'));
 
     click.classList.add('operations__tab--active');
+
+    contents.forEach(content =>
+      content.classList.remove('operations__content--active')
+    );
 
     const datatab = click.getAttribute('data-tab');
 
@@ -81,4 +85,74 @@ tabsContainer.addEventListener('click', function (e) {
       .querySelector(`.operations__content--${datatab}`)
       .classList.add('operations__content--active');
   }
+});
+
+///////////////////////////////
+
+const handleHover = function (e, opacity) {
+  if (e.target.classList.contains('nav__link')) {
+    const siblings = e.target.closest('nav').querySelectorAll('.nav__link');
+
+    siblings.forEach(el => {
+      if (el !== e.target) {
+        el.style.opacity = opacity;
+      }
+    });
+  }
+};
+
+nav.addEventListener('mouseover', function (e) {
+  e.preventDefault();
+  handleHover(e, 0.5);
+});
+
+nav.addEventListener('mouseout', function (e) {
+  e.preventDefault();
+  handleHover(e, 1);
+});
+
+//////////////////////////////////
+
+const nacHeight = nav.getBoundingClientRect().height;
+
+const header = document.querySelector('header');
+
+const stickyNav = function (entries) {
+  const [a] = entries;
+
+  if (!a.isIntersecting) {
+    nav.classList.add('sticky');
+  } else {
+    nav.classList.remove('sticky');
+  }
+};
+
+const observer = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${nacHeight}px`,
+});
+
+observer.observe(header);
+
+////////////////////////////// revealing section on scroll
+const sections = document.querySelectorAll('.section');
+
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+  console.log(entry);
+  if (entry.isIntersecting) {
+    entry.target.classList.remove('section--hidden');
+    observer.unobserve(entry.target);
+  }
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+
+sections.forEach(section => {
+  section.classList.add('section--hidden');
+  sectionObserver.observe(section);
 });
