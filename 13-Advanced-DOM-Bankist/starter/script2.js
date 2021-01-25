@@ -69,8 +69,6 @@ container.addEventListener('click', function (e) {
   const click = e.target.closest('button');
 
   if (click) {
-    console.log(click);
-
     btns.forEach(btn => btn.classList.remove('operations__tab--active'));
 
     click.classList.add('operations__tab--active');
@@ -140,7 +138,7 @@ const sections = document.querySelectorAll('.section');
 
 const revealSection = function (entries, observer) {
   const [entry] = entries;
-  console.log(entry);
+
   if (entry.isIntersecting) {
     entry.target.classList.remove('section--hidden');
     observer.unobserve(entry.target);
@@ -153,6 +151,115 @@ const sectionObserver = new IntersectionObserver(revealSection, {
 });
 
 sections.forEach(section => {
-  section.classList.add('section--hidden');
+  //section.classList.add('section--hidden');
   sectionObserver.observe(section);
 });
+
+//////////////////////////////lazy loading images
+//const allLazyImages = document.querySelectorAll('img[data-src]');
+const allLazyImages = document.querySelectorAll('.features__img');
+
+/* allLazyImages.forEach(image => {
+  image.classList.remove('lazy-img');
+}); */
+
+const revealImages = function (entries, observer) {
+  const [entry] = entries;
+  if (entry.isIntersecting) {
+    entry.target.src = entry.target.dataset.src;
+
+    entry.target.addEventListener('load', function () {
+      entry.target.classList.remove('lazy-img');
+    });
+
+    observer.unobserve(entry.target);
+  }
+};
+
+const imgObserver = new IntersectionObserver(revealImages, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px',
+});
+
+allLazyImages.forEach(image => imgObserver.observe(image));
+
+/////////////////// slider
+
+const sliderEl = document.querySelector('.slider');
+const allSlides = document.querySelectorAll('.slide');
+const dots = document.querySelector('.dots');
+const btnLeft = document.querySelector('.slider__btn--left');
+const btnRight = document.querySelector('.slider__btn--right');
+
+//tämä vain että on helpompi nähdä kuvat
+// sliderEl.style.transform = 'scale(0.5)';
+// sliderEl.style.overflow = 'visible';
+
+//joonaksen versio
+allSlides.forEach(
+  (slide, i) => (slide.style.transform = `translateX(${100 * i}%)`)
+);
+let curSlide = 0;
+const maxSlide = allSlides.length;
+
+const goToSLide = function (s) {
+  allSlides.forEach(
+    (slide, i) => (slide.style.transform = `translateX(${100 * (i - s)}%)`)
+  );
+};
+
+goToSLide(0);
+
+const nextSlide = function () {
+  if (curSlide === maxSlide - 1) {
+    curSlide = 0;
+  } else {
+    curSlide++;
+  }
+  goToSLide(curSlide);
+};
+
+const previousSlide = function () {
+  if (curSlide === 0) {
+    curSlide = maxSlide - 1;
+  } else {
+    curSlide--;
+  }
+
+  goToSLide(curSlide);
+};
+
+btnRight.addEventListener('click', nextSlide);
+btnLeft.addEventListener('click', previousSlide);
+// oma eka versio
+//eka slide näkyviin
+/* allSlides.forEach(slide => slide.classList.add('hidden'));
+document.querySelector('.slide--1').classList.remove('hidden');
+
+//dots näkyviin
+dots.classList.add('dots__dot');
+dots.classList.add('dots__dot--active');
+
+let num = 1;
+
+sliderEl.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  if (e.target.classList.contains('slider__btn--right')) {
+    num++;
+    if (num === 4) num = 1;
+
+    allSlides.forEach(slide => slide.classList.add('hidden'));
+    document.querySelector(`.slide--${num}`).classList.remove('hidden');
+  } else if (e.target.classList.contains('slider__btn--left')) {
+    num--;
+    if (num === 0) num = 3;
+
+    allSlides.forEach(slide => slide.classList.add('hidden'));
+    document.querySelector(`.slide--${num}`).classList.remove('hidden');
+  } else if (e.target.classList.contains('dots')) {
+    console.log('dot pressed');
+  }
+});
+ */
