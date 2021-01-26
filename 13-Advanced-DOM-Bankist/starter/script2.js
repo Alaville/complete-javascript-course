@@ -54,6 +54,8 @@ nav.addEventListener('click', function (e) {
   ) {
     const href = e.target.getAttribute('href').slice(1);
     document.getElementById(`${href}`).scrollIntoView({ behavior: 'smooth' });
+  } else if (e.target.classList.contains('nav__logo')) {
+    document.querySelector('.header').scrollIntoView({ behavior: 'smooth' });
   }
 });
 
@@ -184,24 +186,27 @@ const imgObserver = new IntersectionObserver(revealImages, {
 
 allLazyImages.forEach(image => imgObserver.observe(image));
 
-/////////////////// slider
+/////////////////// SLIDER
 
 const sliderEl = document.querySelector('.slider');
 const allSlides = document.querySelectorAll('.slide');
-const dots = document.querySelector('.dots');
+const dotContainer = document.querySelector('.dots');
 const btnLeft = document.querySelector('.slider__btn--left');
 const btnRight = document.querySelector('.slider__btn--right');
 
-//tämä vain että on helpompi nähdä kuvat
-// sliderEl.style.transform = 'scale(0.5)';
-// sliderEl.style.overflow = 'visible';
-
-//joonaksen versio
-allSlides.forEach(
-  (slide, i) => (slide.style.transform = `translateX(${100 * i}%)`)
-);
 let curSlide = 0;
 const maxSlide = allSlides.length;
+///////////////////////////////////////////////////
+
+/// FUNCTIONS
+const createDots = function () {
+  allSlides.forEach((_, i) => {
+    dotContainer.insertAdjacentHTML(
+      'beforeend',
+      `<button class="dots__dot" data-slide="${i}"></button>`
+    );
+  });
+};
 
 const goToSLide = function (s) {
   allSlides.forEach(
@@ -209,7 +214,14 @@ const goToSLide = function (s) {
   );
 };
 
-goToSLide(0);
+const activeDot = num => {
+  document
+    .querySelectorAll('.dots__dot')
+    .forEach(dot => dot.classList.remove('dots__dot--active'));
+  document
+    .querySelectorAll('.dots__dot')
+    [num].classList.add('dots__dot--active');
+};
 
 const nextSlide = function () {
   if (curSlide === maxSlide - 1) {
@@ -218,6 +230,7 @@ const nextSlide = function () {
     curSlide++;
   }
   goToSLide(curSlide);
+  activeDot(curSlide);
 };
 
 const previousSlide = function () {
@@ -228,38 +241,39 @@ const previousSlide = function () {
   }
 
   goToSLide(curSlide);
+  activeDot(curSlide);
 };
 
+const init = function () {
+  createDots();
+  goToSLide(0);
+  activeDot(curSlide);
+};
+
+init();
+
+//////////////////////////////////////////////////////////
+// EVENT HANDLERS
+
+//buttons right and left
 btnRight.addEventListener('click', nextSlide);
 btnLeft.addEventListener('click', previousSlide);
-// oma eka versio
-//eka slide näkyviin
-/* allSlides.forEach(slide => slide.classList.add('hidden'));
-document.querySelector('.slide--1').classList.remove('hidden');
 
-//dots näkyviin
-dots.classList.add('dots__dot');
-dots.classList.add('dots__dot--active');
-
-let num = 1;
-
-sliderEl.addEventListener('click', function (e) {
-  e.preventDefault();
-
-  if (e.target.classList.contains('slider__btn--right')) {
-    num++;
-    if (num === 4) num = 1;
-
-    allSlides.forEach(slide => slide.classList.add('hidden'));
-    document.querySelector(`.slide--${num}`).classList.remove('hidden');
-  } else if (e.target.classList.contains('slider__btn--left')) {
-    num--;
-    if (num === 0) num = 3;
-
-    allSlides.forEach(slide => slide.classList.add('hidden'));
-    document.querySelector(`.slide--${num}`).classList.remove('hidden');
-  } else if (e.target.classList.contains('dots')) {
-    console.log('dot pressed');
+// keys right and left
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'ArrowRight') {
+    nextSlide();
+  }
+  if (e.key === 'ArrowLeft') {
+    previousSlide();
   }
 });
- */
+
+// dots
+dotContainer.addEventListener('click', function (e) {
+  if (e.target.classList.contains('dots__dot')) {
+    const slideNum = e.target.getAttribute('data-slide');
+    goToSLide(slideNum);
+    activeDot(slideNum);
+  }
+});
