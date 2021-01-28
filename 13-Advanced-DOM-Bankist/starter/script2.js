@@ -153,7 +153,7 @@ const sectionObserver = new IntersectionObserver(revealSection, {
 });
 
 sections.forEach(section => {
-  //section.classList.add('section--hidden');
+  section.classList.add('section--hidden');
   sectionObserver.observe(section);
 });
 
@@ -281,14 +281,14 @@ dotContainer.addEventListener('click', function (e) {
 ////////////////////////////////////////////
 // LIFECYCLE DOM EVENTS
 
-document.addEventListener('DOMContentLoaded', function (e) {
-  console.log(e);
-});
+// document.addEventListener('DOMContentLoaded', function (e) {
+//   console.log(e);
+// });
 
-window.addEventListener('load', function (e) {
-  console.log('loaded');
-  console.log(e);
-});
+// window.addEventListener('load', function (e) {
+//   console.log('loaded');
+//   console.log(e);
+// });
 
 // window.addEventListener('beforeunload', function (e) {
 //   e.preventDefault();
