@@ -1,6 +1,6 @@
 'use strict';
 
-const openingHours = {
+/* const openingHours = {
   thu: {
     open: 12,
     close: 22,
@@ -13,9 +13,9 @@ const openingHours = {
     open: 0, // Open 24 hours
     close: 24,
   },
-};
+}; */
 
-const restaurant = {
+/* const restaurant = {
   name: 'Classico Italiano',
   location: 'Via Angelo Tavanti 23, Firenze, Italy',
   categories: ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'],
@@ -46,7 +46,7 @@ const restaurant = {
     console.log(main);
     console.log(others);
   },
-};
+}; */
 
 /* const days = Object.keys(openingHours);
 console.log(days);
@@ -513,7 +513,7 @@ Some_Variable
 delayed_departure
 */
 
-document.body.append(document.createElement('textarea'));
+/* document.body.append(document.createElement('textarea'));
 document.body.append(document.createElement('button'));
 
 const buttonEl = document.querySelector('button');
@@ -537,7 +537,7 @@ buttonEl.addEventListener('click', function () {
 
     console.log(final.padEnd(20, ' ') + '✅'.repeat(i + 1));
   }
-});
+}); */
 
 /* function underscoreToCamel(text) {
   const trimmed = text.trim();
@@ -551,3 +551,30 @@ buttonEl.addEventListener('click', function () {
   const final = firsttoLower + secondtoCamel;
   return final;
 } */
+
+const restaurant = {
+  name: 'Classico Italiano',
+  location: 'Via Angelo Tavanti 23, Firenze, Italy',
+  categories: ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'],
+  starterMenu: ['Focaccia', 'Bruschetta', 'Garlic Bread', 'Caprese Salad'],
+  mainMenu: ['Pizza', 'Pasta', 'Risotto'],
+
+  openingHours: {
+    thu: {
+      open: 12,
+      close: 22,
+    },
+    fri: {
+      open: 11,
+      close: 23,
+    },
+    sat: {
+      open: 0, // Open 24 hours
+      close: 24,
+    },
+  },
+
+  order(starterIndex, mainIndex) {
+    return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
+  },
+};
