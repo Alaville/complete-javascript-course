@@ -127,7 +127,6 @@ class App {
 
     // add new workout to array
     this.workouts.push(workout);
-    console.log(workout);
 
     //modify workout date
     this.modifyDate(workout);
@@ -232,7 +231,6 @@ class App {
 
   _getLocalStorage() {
     const data = JSON.parse(localStorage.getItem('workouts'));
-    console.log(data);
 
     if (!data) return;
 
