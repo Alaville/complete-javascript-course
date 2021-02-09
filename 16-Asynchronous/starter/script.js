@@ -210,7 +210,7 @@ wait(2)
   .then(() => console.log('waited 1 second'));
  */
 
-const getPosition = function () {
+/* const getPosition = function () {
   return new Promise(function (resolve, reject) {
     //   navigator.geolocation.getCurrentPosition(
     //     function (e) {
@@ -224,7 +224,7 @@ const getPosition = function () {
 
     navigator.geolocation.getCurrentPosition(resolve, reject);
   });
-};
+}; */
 
 //getPosition().then(response => console.log(response.coords));
 
@@ -259,27 +259,185 @@ whereAmI();
  */
 
 // 'img-1.jpg'
+// const wait = function (sec) {
+//   return new Promise(function (resolve) {
+//     setTimeout(resolve, sec * 1000);
+//   });
+// };
 
-const createImage = function (path) {
-  return new Promise(function (resolve, reject) {
-    const img = document.createElement('img');
-    img.src = path;
+// let img;
 
-    img.addEventListener('load', function () {
-      document.querySelector('.images').append(img);
-      resolve(img);
-    });
+// const createImage = function (path) {
+//   return new Promise(function (resolve, reject) {
+//     img = document.createElement('img');
+//     img.src = path;
 
-    img.addEventListener('error', function () {
-      reject(new Error('Image not found!'));
-    });
-  });
+//     img.addEventListener('load', function () {
+//       document.querySelector('.images').append(img);
+//       resolve(img);
+//       setTimeout(() => (img.style.display = 'none'), 3000);
+//     });
 
-  // document
-  //   .querySelector('.images')
-  //   .insertAdjacentHTML('afterbegin', `<img src="${path}" alt="pic">`);
+//     img.addEventListener('error', function () {
+//       reject(new Error('Image not found!'));
+//     });
+//   });
+
+//   // document
+//   //   .querySelector('.images')
+//   //   .insertAdjacentHTML('afterbegin', `<img src="${path}" alt="pic">`);
+// };
+
+// let currentImg;
+
+// createImage('img/img-1.jpg')
+//   .then(img => {
+//     currentImg = img;
+//     console.log('image 1 loaded');
+//     return wait(3);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//     return createImage('img/img-2.jpg');
+//   })
+//   .then(img => {
+//     currentImg = img;
+//     console.log('image 2 loaded');
+//     return wait(3);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//   })
+//   .catch(err => console.log(err));
+
+// .then(img => console.log('image loaded'))
+// .catch(err => console.log(`${err}`));
+
+// const timeOut = function (sec) {
+//   setTimeout(() => console.log(`${sec} seconds gone 😜`), sec * 1000);
+// };
+
+// const wait = function (sec, imgPath) {
+//   return new Promise(function (resolve, reject) {
+//     resolve(
+//       //createImage(imgPath),
+//       setTimeout(() => console.log(`${sec} seconds gone 😜`), sec * 1000)
+//       // setTimeout(
+//       //   () => (document.querySelector('.images').textContent = ''),
+//       //   sec * 1000
+//     );
+//     reject(err => console.log(err));
+//   });
+// };
+
+// wait(1)
+//   .then(() => wait(2))
+//   .then(() => wait(3))
+//   .then(() => wait(4))
+//   .then(() => wait(5))
+//   .then(() => wait(6))
+//   .then(() => wait(10));
+
+//wait(3, 'img/img-1.jpg').then(() => wait(6, 'img/img-2.jpg'));
+// .then(() => wait(9, 'img/img-3.jpg'))
+// .catch(err => console.log(err));
+
+// const img = document.createElement('img');
+// img.src = 'img/img-1.jpg';
+
+// document.querySelector('.images').append(img);
+
+// setTimeout(() => (document.querySelector('.images').textContent = ''), 5000);
+
+// const whereAmI = async function (country) {
+//   const res = await fetch(`https://restcountries.eu/rest/v2/name/${country}`);
+//   const data = await res.json();
+//   const [ob] = data;
+//   console.log(ob);
+//   renderCountry(ob);
+// };
+// whereAmI('finland');
+// console.log('First!!');
+
+//'https://geocode.xyz/51.50354,-0.12768?geoit=xml'
+
+// const getPosition = function () {
+//   return new Promise(function (resolve, reject) {
+//     navigator.geolocation.getCurrentPosition(resolve, reject);
+//   });
+// };
+
+//////////////// ASYNC/AWAIT
+// const whereAmI = async function () {
+//   try {
+//     const { latitude, longitude } = await getPosition().then(
+//       geoPosition => geoPosition.coords
+//     );
+//     const res = await fetch(
+//       `https://geocode.xyz/${latitude},${longitude}?geoit=json`
+//     );
+//     if (!res.ok) throw new Error('Problem getting location data 💥');
+
+//     const data = await res.json();
+//     const resCountry = await fetch(
+//       `https://restcountries.eu/rest/v2/name/${data.country}`
+//     );
+
+//     if (!resCountry.ok) throw new Error('Problem getting country data 💥💥');
+
+//     const [dataCountry] = await resCountry.json();
+
+//     renderCountry(dataCountry);
+//     return `You are in ${data.city}, ${dataCountry.name}.`;
+//   } catch (err) {
+//     console.log(`${err}💥💥`);
+//   }
+// };
+// console.log('START');
+// // const city = whereAmI();
+// // console.log(city);
+// whereAmI().then(city => console.log(city));
+// console.log('FINISH');
+
+// (async function () {
+//   try {
+//     const a = await whereAmI();
+//     console.log(a);
+//   } catch (err) {
+//     console.log(err);
+//   }
+//   console.log('Finished gettin location');
+// })();
+const getCountryCapital = async function (country) {
+  const res = await fetch(`https://restcountries.eu/rest/v2/name/${country}`);
+  return res.json();
 };
 
-createImage('img/img-1.jpg')
-  .then(img => console.log('image loaded'))
-  .catch(err => console.log(`${err}`));
+const getCapitalCitys = async function (country1, country2, country3) {
+  const capitals = [];
+  try {
+    const data = await Promise.all([
+      getCountryCapital(country1),
+      getCountryCapital(country2),
+      getCountryCapital(country3),
+    ]);
+
+    data.flat().forEach(country => {
+      capitals.push(country.capital);
+    });
+
+    // const capital1 = await getCountryCapital(country1);
+    // const capital2 = await getCountryCapital(country2);
+    // const capital3 = await getCountryCapital(country3);
+
+    // capitals.push(capital1);
+    // capitals.push(capital2);
+    // capitals.push(capital3);
+  } catch (err) {
+    console.log(err);
+  }
+  console.log(capitals);
+};
+
+getCapitalCitys('finland', 'norway', 'italy');
+//getCountryCapital('italy');
